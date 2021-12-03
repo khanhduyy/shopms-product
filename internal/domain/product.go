@@ -34,7 +34,7 @@ func NewProduct(product *pb.Product) *Product {
 	}
 }
 
-func (p *Product) getProto() *pb.Product {
+func (p *Product) GetProto() *pb.Product {
 	if p == nil {
 		return nil
 	}

@@ -22,8 +22,16 @@ type productRepositoryIpml struct {
 
 func (p *productRepositoryIpml) FindAll(params *domain.ProductQuery) (*domain.ProductPage, error) {
 	var query = q.NewQuery(p.tx).
-		Select([]string{"p.*"}).
+		Select([]string{"p.*, p.Id"}).
 		From(domain.ProductTable, "p").
 		Page(params.Offset, params.Limit)
-
+	var products []*domain.Product
+	total, err := query.FindPage(&products)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.ProductPage{
+		Total: total,
+		Items: products,
+	}, nil
 }
