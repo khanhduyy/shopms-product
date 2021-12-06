@@ -8,6 +8,7 @@ import (
 
 type ProductRepository interface {
 	FindAll(query *domain.ProductQuery) (*domain.ProductPage, error)
+	Create(products []*domain.Product) ([]*domain.Product, error)
 }
 
 func NewProductRepository(db *db.Client) ProductRepository {
@@ -34,4 +35,12 @@ func (p *productRepositoryIpml) FindAll(params *domain.ProductQuery) (*domain.Pr
 		Total: total,
 		Items: products,
 	}, nil
+}
+
+func (p *productRepositoryIpml) Create(products []*domain.Product) ([]*domain.Product, error) {
+	var results = p.tx.Save(products)
+	if results.Error != nil {
+		return nil, results.Error
+	}
+	return products, nil
 }

@@ -15,11 +15,11 @@ type ProductService struct {
 }
 
 // GetAllProduct provides a mock function with given fields: ctx, empty
-func (_m *ProductService) GetAllProduct(ctx context.Context, empty *product.Empty) (*product.GetProductsResponse, error) {
+func (_m *ProductService) GetAllProduct(ctx context.Context, empty *product.GetProductsRequest) (*product.GetProductsResponse, error) {
 	ret := _m.Called(ctx, empty)
 
 	var r0 *product.GetProductsResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *product.Empty) *product.GetProductsResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *product.GetProductsRequest) *product.GetProductsResponse); ok {
 		r0 = rf(ctx, empty)
 	} else {
 		if ret.Get(0) != nil {
@@ -28,8 +28,31 @@ func (_m *ProductService) GetAllProduct(ctx context.Context, empty *product.Empt
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *product.Empty) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *product.GetProductsRequest) error); ok {
 		r1 = rf(ctx, empty)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Save provides a mock function with given fields: ctx, productRequests
+func (_m *ProductService) Save(ctx context.Context, productRequests []*product.Product) (*product.CreateProductResponse, error) {
+	ret := _m.Called(ctx, productRequests)
+
+	var r0 *product.CreateProductResponse
+	if rf, ok := ret.Get(0).(func(context.Context, []*product.Product) *product.CreateProductResponse); ok {
+		r0 = rf(ctx, productRequests)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*product.CreateProductResponse)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, []*product.Product) error); ok {
+		r1 = rf(ctx, productRequests)
 	} else {
 		r1 = ret.Error(1)
 	}

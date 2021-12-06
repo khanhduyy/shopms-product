@@ -18,7 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductAPIClient interface {
-	GetAllProduct(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetProductsResponse, error)
+	GetAllProduct(ctx context.Context, in *GetProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error)
+	CreateProducts(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 }
 
 type productAPIClient struct {
@@ -29,9 +30,18 @@ func NewProductAPIClient(cc grpc.ClientConnInterface) ProductAPIClient {
 	return &productAPIClient{cc}
 }
 
-func (c *productAPIClient) GetAllProduct(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetProductsResponse, error) {
+func (c *productAPIClient) GetAllProduct(ctx context.Context, in *GetProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error) {
 	out := new(GetProductsResponse)
 	err := c.cc.Invoke(ctx, "/rpc.product.ProductAPI/GetAllProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productAPIClient) CreateProducts(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error) {
+	out := new(CreateProductResponse)
+	err := c.cc.Invoke(ctx, "/rpc.product.ProductAPI/CreateProducts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,15 +52,19 @@ func (c *productAPIClient) GetAllProduct(ctx context.Context, in *Empty, opts ..
 // All implementations should embed UnimplementedProductAPIServer
 // for forward compatibility
 type ProductAPIServer interface {
-	GetAllProduct(context.Context, *Empty) (*GetProductsResponse, error)
+	GetAllProduct(context.Context, *GetProductsRequest) (*GetProductsResponse, error)
+	CreateProducts(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 }
 
 // UnimplementedProductAPIServer should be embedded to have forward compatible implementations.
 type UnimplementedProductAPIServer struct {
 }
 
-func (UnimplementedProductAPIServer) GetAllProduct(context.Context, *Empty) (*GetProductsResponse, error) {
+func (UnimplementedProductAPIServer) GetAllProduct(context.Context, *GetProductsRequest) (*GetProductsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllProduct not implemented")
+}
+func (UnimplementedProductAPIServer) CreateProducts(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProducts not implemented")
 }
 
 // UnsafeProductAPIServer may be embedded to opt out of forward compatibility for this service.
@@ -65,7 +79,7 @@ func RegisterProductAPIServer(s grpc.ServiceRegistrar, srv ProductAPIServer) {
 }
 
 func _ProductAPI_GetAllProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(GetProductsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -77,7 +91,25 @@ func _ProductAPI_GetAllProduct_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/rpc.product.ProductAPI/GetAllProduct",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductAPIServer).GetAllProduct(ctx, req.(*Empty))
+		return srv.(ProductAPIServer).GetAllProduct(ctx, req.(*GetProductsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductAPI_CreateProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductAPIServer).CreateProducts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpc.product.ProductAPI/CreateProducts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductAPIServer).CreateProducts(ctx, req.(*CreateProductRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -92,6 +124,10 @@ var ProductAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllProduct",
 			Handler:    _ProductAPI_GetAllProduct_Handler,
+		},
+		{
+			MethodName: "CreateProducts",
+			Handler:    _ProductAPI_CreateProducts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

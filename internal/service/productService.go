@@ -8,7 +8,8 @@ import (
 )
 
 type ProductService interface {
-	GetAllProduct(ctx context.Context, empty *pb.Empty) (*pb.GetProductsResponse, error)
+	GetAllProduct(ctx context.Context, empty *pb.GetProductsRequest) (*pb.GetProductsResponse, error)
+	Save(ctx context.Context, productRequests []*pb.Product) (*pb.CreateProductResponse, error)
 }
 
 type productServiceImpl struct {

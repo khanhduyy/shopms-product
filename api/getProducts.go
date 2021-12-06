@@ -7,8 +7,8 @@ import (
 	pb "github.com/khanhduyy/shopms-product/rpc/product"
 )
 
-func (p *ProductApi) GetAllProduct(ctx context.Context, empty *pb.Empty) (*pb.GetProductsResponse, error) {
-	result, err := p.ProductService.GetAllProduct(ctx, empty)
+func (p *ProductApi) GetAllProduct(ctx context.Context, request *pb.GetProductsRequest) (*pb.GetProductsResponse, error) {
+	result, err := p.ProductService.GetAllProduct(ctx, request)
 	if err != nil {
 		log.Errorf("Cound not get products on error %v", err)
 		return nil, err

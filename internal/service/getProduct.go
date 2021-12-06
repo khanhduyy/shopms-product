@@ -7,8 +7,8 @@ import (
 	pb "github.com/khanhduyy/shopms-product/rpc/product"
 )
 
-func (p *productServiceImpl) GetAllProduct(ctx context.Context, empty *pb.Empty) (*pb.GetProductsResponse, error) {
-	result, err := p.ProductRepository.FindAll(toProductQuery())
+func (p *productServiceImpl) GetAllProduct(ctx context.Context, request *pb.GetProductsRequest) (*pb.GetProductsResponse, error) {
+	result, err := p.ProductRepository.FindAll(toProductQuery(request))
 	if err != nil {
 		return nil, err
 	}
@@ -22,6 +22,9 @@ func (p *productServiceImpl) GetAllProduct(ctx context.Context, empty *pb.Empty)
 	}, nil
 }
 
-func toProductQuery() *domain.ProductQuery {
-	return &domain.ProductQuery{}
+func toProductQuery(productRequest *pb.GetProductsRequest) *domain.ProductQuery {
+	return &domain.ProductQuery{
+		Limit:  productRequest.Limit,
+		Offset: productRequest.Offset,
+	}
 }
